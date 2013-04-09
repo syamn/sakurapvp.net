@@ -5,20 +5,54 @@ App::uses('Sanitize', 'Utility');
 class RevisionsController extends AppController { 
 	var $uses = array('CommitLog');
 
-	public function index() {
-		//$this->layout = "Sample"; // Use default layout
-		//$this->set("msg", "This is home controller!");
+	var $repoList = array(
+			'sakurapvp' => array(9029307, 'SakuraPVP'),
+			'mapmaker' => array(9174613, 'MapMaker'),
+			'web' => array(9194389, 'ウェブサイト')
+		);
 
-		$repoID = 9029307; // SakuraPVP
+	public function index($repo = 'sakurapvp', $page = 1) {
+		// Validate
+		$repo = trim(strtolower($repo));
+		$repoData = $this->repoList[$repo];
+		if (empty($repoData)){
+			throw new NotFoundException('指定されたリポジトリが見つかりません');
+		}
+
+		$page = ((int)$page > 0) ? (int)$page : 1;
+
+		$rowsForPage = 30;
+
 		$rows = $this->CommitLog->find('all', array(
-			'conditions' => array('CommitLog.repo_id' => $repoID),
+			'conditions' => array('CommitLog.repo_id' => $repoData[0]),
 			'order' => 'CommitLog.id DESC',
-			'limit' => '30',
-			'page' => 1
+			'limit' => $rowsForPage,
+			'page' => $page
 			));
 
-		$this->set('firstRowNo', 1);
+		// get max pages
+		$count = $this->CommitLog->find('count', array('conditions' => array('CommitLog.repo_id' => $repoData[0])));
+		$lastPage = (int)(($count - 1) / $rowsForPage) + 1;
+
+		// Ser variables for View
+		$this->set('firstRowNo', $page * $rowsForPage - 29);
 		$this->set('rows', $rows);
+
+		$this->set('repoName', $repoData[1]);
+		$this->set('repoList', $this->repoList);
+		$this->set('repo', $repo);
+		$this->set('page', $page);
+		$this->Set('lastPage', $lastPage);
+	}
+
+	public function sakurapvp($page = 1){
+		$this->setAction('index', 'sakurapvp', $page);
+	}
+	public function mapmaker($page = 1){
+		$this->setAction('index', 'mapmaker', $page);
+	}
+	public function web($page = 1){
+		$this->setAction('index', 'web', $page);
 	}
 
 	public function github_hooks() {
@@ -116,15 +150,24 @@ class RevisionsController extends AppController {
 
     	// Update twitter status
     	$this->_log("Building update message");
-    	$tweet = "Updated by ".$committer_username.". http://sakurapvp.net/revisions (HEAD: ".$shortHash.")";
-	    if (mb_strlen($tweet) > 140){
-	        $tweet = mb_substr($tweet, 0, 138)."..";
-	    }
-	    $this->_log("Tweeting..: ".$tweet);
 
-    	$twitter = new OAuthClient(OAUTH_CONFIG::CONSUMER_KEY, OAUTH_CONFIG::CONSUMER_SECRET);
-		$twitter->post(OAUTH_CONFIG::ACCESS_TOKEN, OAUTH_CONFIG::ACCESS_TOKEN_SECRET, 
-			'https://api.twitter.com/1/statuses/update.json', array('status' => $tweet));
+    	$tweet = null;
+    	foreach ($repoList as $urlName => $data){
+    		if ($data[0] == (int)$repoId){
+				$tweet = $committer_username.'が'.$data[1].'を更新しました: http://sakurapvp.net/revisions/'.$urlName.' (HEAD: '.$shortHash.')';
+    		}
+    	}
+    	if (!empty($tweet)){
+    		if (mb_strlen($tweet) > 140){
+		        $tweet = mb_substr($tweet, 0, 138)."..";
+		    }
+		    $this->_log("Tweeting..: ".$tweet);
+		    $twitter = new OAuthClient(OAUTH_CONFIG::CONSUMER_KEY, OAUTH_CONFIG::CONSUMER_SECRET);
+			$twitter->post(OAUTH_CONFIG::ACCESS_TOKEN, OAUTH_CONFIG::ACCESS_TOKEN_SECRET, 
+				'https://api.twitter.com/1/statuses/update.json', array('status' => $tweet));
+    	}else{
+    		$this->_log("Tweet message is empty! Skipped tweeting!");
+    	}
 
     	// end of logfile
     	$this->_log("==END==");
