@@ -9,6 +9,7 @@ app/[Cc]onfig/database.php
 
 # OAuth Configuration
 app/[Vv]endor/OAuth/[Cc]onfig.php
+app/[Cc]onfig/email.php
 
 # Filesystem dust / Others
 .DS_Store
