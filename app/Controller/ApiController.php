@@ -26,28 +26,21 @@ class ApiController extends AppController {
 		if (empty($this->args['name']) || empty($this->args['mail']) || empty($this->args['regkey'])){
 			throw new BadRequestException('Invalid new account request.');
 		}
+		
+		$title = "Minecraftゲームサーバー SakuraPVPへようこそ！";
+		$vars = array(
+				'name' => $this->args['name'],
+				'key' => $this->args['regkey'],
+				'url' => 'http://sakurapvp.net/user/make_account/'.$this->args['name'].'?key='.$this->args['regkey'],
+			);
 
-		$name = $this->args['name'];
-		$key = $this->args['regkey'];
-
-		$title = "SakuraPVPへようこそ！";
-		$body = $name." さん SakuraPVPへようこそ！\n\n";
-		$body .= "これは、サーバー内から登録用のコマンドを入力した際に送信される自動送信メールです。\n";
-		$body .= "あなたのアカウントはまだ作成されていません。次のリンクをクリックして、ユーザー登録へお進みください：\n";
-		$body .= "http://sakurapvp.net/user/make_account/".$name."?key=".$key."\n";
-		$body .= "あなたの登録キー: ".$key."\n\n";
-		$body .= "(このメッセージは送信専用のメールアドレスより送信しているため、返信しないでください。)\n";
-		$body .= "---------------------------------------------------\n";
-		$body .= "SakuraPVP Staff\n  http://sakurapvp.net";
-
-
-		$mail = new CakeEmail();
+		$mail = new CakeEmail('default');
 		$check = $mail
-			->config(array('log' => 'emails'))
-			->from(array('noreply@sakurapvp.net' => 'SakuraPVP'))
+			->template('regist_mail', 'default')
+			->viewVars($vars)
 			->to($this->args['mail'])
 			->subject($title)
-			->send($body);
+			->send();
 
 		if($check){
 			exit("OK,");
