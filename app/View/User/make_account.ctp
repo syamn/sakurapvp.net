@@ -27,8 +27,6 @@
 				<span id="err_agreed_msg" class="help-block" style="display: none;">続行するには、利用規約に同意していただく必要があります</span>
 			</div>
 		</div>
-		<input type="hidden" name="name" value="<?=$name;?>" />
-		<input type="hidden" name="regkey" value="<?=$key;?>" />
 		<div class="controls"><button id="submit" type="submit" class="btn btn-large btn-primary" onClick="return validate();">アカウント登録</button></div>
 	</form>
 </div>
