@@ -50,6 +50,7 @@
 			</div><!-- /navbar -->			
 		</div><!-- /header -->
 		<div class="content">
+			<?php echo $this->Session->flash(); ?>
 			<?php echo $this->fetch('content'); ?>
 		</div><!-- /content -->
 		<hr />
