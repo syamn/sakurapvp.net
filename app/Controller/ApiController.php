@@ -12,12 +12,12 @@ class ApiController extends AppController {
 		$this->args = $this->params['url'];
 
 		// Require id / key
-		if (empty($this->args['sid']) || empty($this->args['skey'])){
+		if (empty($this->args['sname']) || empty($this->args['skey'])){
 			throw new BadRequestException('Server ID and Private Key are required.');
 		}
 
 		// Auth server
-		$tmp = $this->ServerData->findByNameAndKey($this->args['sid'], $this->args['skey']);
+		$tmp = $this->ServerData->findByNameAndKey($this->args['sname'], $this->args['skey']);
 		if (empty($tmp)){
 			throw new BadRequestException('Server authentication failed.');
 		}
