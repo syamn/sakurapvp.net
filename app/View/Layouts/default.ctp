@@ -11,7 +11,7 @@
 		echo $this->Html->css('bootstrap-responsive.min');
 		echo $this->Html->css('sakurapvp');
 		// Script
-		echo $this->Html->script('jquery'.DS.'jquery-1.8.3.min');
+		echo $this->Html->script('jquery/jquery-1.8.3.min');
 		echo $this->Html->script('bootstrap.min');
 		echo $this->Html->script('custom.js');
 
