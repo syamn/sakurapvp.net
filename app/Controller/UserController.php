@@ -89,6 +89,19 @@ class UserController extends AppController {
 			return 'ユーザ登録に失敗しました。管理人にご連絡ください。';
 		}
 		$this->RegistKey->delete($record['RegistKey']['data_id']); // Delete registKey
+
+		// Send welcome mail
+		$title = "SakuraPVP ユーザー登録完了のお知らせ";
+		$vars = array('name' => $this->args['name'], 'mail' => $record['RegistKey']['email']);
+
+		$mail = new CakeEmail('default');
+		$check = $mail
+			->template('registerd_mail', 'default')
+			->viewVars($vars)
+			->to($this->args['mail'])
+			->subject($title)
+			->send();
+
 		return null;
 	}
 }

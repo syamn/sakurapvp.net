@@ -13,7 +13,7 @@ class ApiController extends AppController {
 
 		// Require id / key
 		if (empty($this->args['sname']) || empty($this->args['skey'])){
-			throw new BadRequestException('Server ID and Private Key are required.');
+			throw new BadRequestException('Server Name and Private Key are required.');
 		}
 
 		// Auth server
@@ -31,7 +31,6 @@ class ApiController extends AppController {
 		$title = "Minecraftゲームサーバー SakuraPVPへようこそ！";
 		$vars = array(
 				'name' => $this->args['name'],
-				'key' => $this->args['regkey'],
 				'url' => 'http://sakurapvp.net/user/make_account/'.$this->args['name'].'?key='.$this->args['regkey'],
 			);
 
@@ -44,7 +43,7 @@ class ApiController extends AppController {
 			->send();
 
 		if($check){
-			exit("OK,");
+			exit("OK, Success");
 		}else{
 			exit("Error, An internal error occured.");
 		}
