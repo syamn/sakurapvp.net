@@ -1,10 +1,47 @@
 <?php
 App::uses('AppController', 'Controller');
 App::uses('Sanitize', 'Utility');
+App::uses('CakeEmail', 'Network/Email');
  
 class UserController extends AppController {
 	var $uses = array('User', 'UserData', 'RegistKey');
-	var $components = array('Session');
+	var $components = array(
+		'Session',
+		'Auth' => array(
+				'authenticate' => array(
+					'ExtendedForm' => array( // Class ExtendedFormAuthenticate exntends FormAuthenticate
+						'fields' => array('username' => 'player_name', 'password' => 'password'),
+						'userModel' => 'User',
+						'recursive' => 0,
+					),
+				),
+				'loginRedirect' => array('controller' => 'user', 'action' => 'index'),
+				'logoutRedirect' => array('controller' => 'user', 'action' => 'login'),
+				'loginAction' => array('controller' => 'user', 'action' => 'login'),
+				'authError' => 'このアクションを行うためにはログインが必要です',
+			)
+		);
+
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow('login', 'make_account');
+	}
+
+	public function login(){
+		if ($this->request->is('post')){
+			if ($this->Auth->login()){
+				$this->redirect($this->Auth->redirect());
+			}else{
+				$this->Session->setFlash('ログインに失敗しました。プレイヤー名またはパスワードが間違っています。', 'default', array(), 'auth');
+			}
+		}
+
+	}
+
+	public function logout() {
+		$this->autoRender = false;
+		$this->redirect($this->Auth->logout());
+	}
 
 	public function make_account($username = null) {
 		if (empty($username) || empty($this->params['url']['key'])){
@@ -56,7 +93,6 @@ class UserController extends AppController {
 		$this->set('mail', $record['RegistKey']['email']);
 		$this->set('key', $record['RegistKey']['key']);
 	}
-
 	public function _regist($record){
 		$data = $this->data;
 		if (empty($data['pass1']) || empty($data['pass2'])){
