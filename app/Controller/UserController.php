@@ -19,7 +19,10 @@ class UserController extends AppController {
 
 		// Auth register key.
 		$record = $this->RegistKey->find('first', array(
-				'conditions' => array('RegistKey.key' => $this->params['url']['key'], 'RegistKey.player_id' => $pid),
+				'conditions' => array(
+						'BINARY RegistKey.key = "'.Sanitize::clean($this->params['url']['key'], 'default').'"',
+						'RegistKey.player_id' => $pid
+					),
 				'recursive' => 2
 			));
 		if (empty($record)){
