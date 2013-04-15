@@ -27,15 +27,31 @@ class UserController extends AppController {
 		$this->Auth->allow('login', 'make_account');
 	}
 
+	public function index(){
+		$this->autoRender = false;
+		$this->redirect(array('controller' => 'user', 'action' => 'home'));
+	}
+
+	public function home(){
+
+	}
+
 	public function login(){
-		if ($this->request->is('post')){
-			if ($this->Auth->login()){
-				$this->redirect($this->Auth->redirect());
-			}else{
-				$this->Session->setFlash('ログインに失敗しました。プレイヤー名またはパスワードが間違っています。', 'default', array(), 'auth');
-			}
+		// User already logged in
+		if ($this->Auth->loggedIn()){
+			$this->Session->setFlash('あなたは既にログインしています！', 'error');
+			$this->redirect(array('controller' => 'user', 'action' => 'home'));
 		}
 
+		// Login attempt
+		if ($this->request->is('post')){
+			if ($this->Auth->login()){
+				$this->Session->setFlash('ログインに成功しました！', 'success');
+				$this->redirect($this->Auth->redirect());
+			}else{
+				$this->Session->setFlash('ログインに失敗しました。プレイヤー名またはパスワードをご確認ください。', 'default', array(), 'auth');
+			}
+		}
 	}
 
 	public function logout() {
