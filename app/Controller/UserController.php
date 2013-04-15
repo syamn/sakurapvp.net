@@ -83,7 +83,7 @@ class UserController extends AppController {
 			$this->redirect('/');
 		}
 		if (!empty($record['User']['Data'])){
-			$this->RegistKey->delete($record['RegistKey']['data_id']); 
+			$this->RegistKey->delete($record['RegistKey']['player_id']); 
 			$this->Session->setFlash('あなたは既にアカウントを持っています！', 'error');
 			$this->redirect('/');
 		}
@@ -143,17 +143,17 @@ class UserController extends AppController {
 		if (!$this->UserData->save($newRecord)){
 			return 'ユーザ登録に失敗しました。管理人にご連絡ください。';
 		}
-		$this->RegistKey->delete($record['RegistKey']['data_id']); // Delete registKey
+		$this->RegistKey->delete($record['RegistKey']['player_id']); // Delete registKey
 
 		// Send welcome mail
 		$title = "SakuraPVP ユーザー登録完了のお知らせ";
-		$vars = array('name' => $this->args['name'], 'mail' => $record['RegistKey']['email']);
+		$vars = array('name' => $record['User']['player_name'], 'mail' => $record['RegistKey']['email']);
 
 		$mail = new CakeEmail('default');
 		$check = $mail
 			->template('registerd_mail', 'default')
 			->viewVars($vars)
-			->to($this->args['mail'])
+			->to($record['RegistKey']['email'])
 			->subject($title)
 			->send();
 
