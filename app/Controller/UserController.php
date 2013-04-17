@@ -31,6 +31,10 @@ class UserController extends AppController {
 		// Login attempt
 		if ($this->request->is('post')){
 			if ($this->Auth->login()){
+				// Update last login date
+				$this->UserData->save(array('UserData' => array('player_id' => $this->Auth->user('player_id'), 'lastWebLogin' => time())));
+
+				// Redirect
 				$this->Session->setFlash('ログインに成功しました！', 'success');
 				$this->redirect($this->Auth->redirect());
 			}else{
@@ -130,7 +134,7 @@ class UserController extends AppController {
 			'player_id' => $pid,
 			'password' => $pass1,
 			'email' => $record['RegistKey']['email'],
-			'regdate' => $now,
+			'regDate' => $now,
 			'lastUpdate' => $now
 		));
 		$this->UserData->create();

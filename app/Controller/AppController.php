@@ -32,6 +32,7 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+	public $uses = array('UserData');
 	public $components = array(
 		'DebugKit.Toolbar',
 		'Session',
@@ -54,6 +55,16 @@ class AppController extends Controller {
 		parent::beforeFilter();
 		$this->Auth->allow();
 
+		// Set login status for view
 		$this->set('loggedIn', $this->Auth->loggedIn());
+
+		// Update user activity if logged in
+		if ($this->Auth->loggedIn()){
+			$this->UserData->save(array('UserData' => array(
+				'player_id' => $this->Auth->user('player_id'), 
+				'lastView' => time(), 
+				'lastViewPage' => $this->name . '/' . $this->action
+			)));
+		}
 	}
 }
