@@ -32,5 +32,28 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-	public $components = array('DebugKit.Toolbar');
+	public $components = array(
+		'DebugKit.Toolbar',
+		'Session',
+		'Auth' => array(
+				'authenticate' => array(
+					'ExtendedForm' => array( // Class ExtendedFormAuthenticate exntends FormAuthenticate
+						'fields' => array('username' => 'player_name', 'password' => 'password'),
+						'userModel' => 'User',
+						'recursive' => 0,
+					),
+				),
+				'loginRedirect' => array('controller' => 'user', 'action' => 'index'),
+				'logoutRedirect' => array('controller' => 'user', 'action' => 'login'),
+				'loginAction' => array('controller' => 'user', 'action' => 'login'),
+				'authError' => 'このアクションを行うためにはログインが必要です',
+			)
+		);
+
+	public function beforeFilter(){
+		parent::beforeFilter();
+		$this->Auth->allow();
+
+		$this->set('loggedIn', $this->Auth->loggedIn());
+	}
 }

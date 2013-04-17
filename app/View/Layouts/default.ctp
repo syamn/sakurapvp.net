@@ -41,8 +41,7 @@
 								<li><a href="/revisions">Revisions</a></li>
 							</ul>
 							<?php
-								$isLoggedOn = false; //TODO
-								echo $this->element(($isLoggedOn) ? 'userNav' : 'guestNav');
+								echo $this->element(($loggedIn) ? 'userNav' : 'guestNav');
 							?>
 						</div> <!-- /.nav-collapse -->
 					</div> <!-- /navbar container -->

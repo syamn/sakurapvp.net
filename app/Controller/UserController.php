@@ -5,26 +5,11 @@ App::uses('CakeEmail', 'Network/Email');
  
 class UserController extends AppController {
 	var $uses = array('User', 'UserData', 'RegistKey');
-	var $components = array(
-		'Session',
-		'Auth' => array(
-				'authenticate' => array(
-					'ExtendedForm' => array( // Class ExtendedFormAuthenticate exntends FormAuthenticate
-						'fields' => array('username' => 'player_name', 'password' => 'password'),
-						'userModel' => 'User',
-						'recursive' => 0,
-					),
-				),
-				'loginRedirect' => array('controller' => 'user', 'action' => 'index'),
-				'logoutRedirect' => array('controller' => 'user', 'action' => 'login'),
-				'loginAction' => array('controller' => 'user', 'action' => 'login'),
-				'authError' => 'このアクションを行うためにはログインが必要です',
-			)
-		);
+	var $components = array();
 
 	public function beforeFilter(){
 		parent::beforeFilter();
-		$this->Auth->allow('login', 'make_account');
+		$this->Auth->deny('home', 'logout');
 	}
 
 	public function index(){
@@ -59,9 +44,18 @@ class UserController extends AppController {
 		$this->redirect($this->Auth->logout());
 	}
 
+	
+
 	public function make_account($username = null) {
+		// User already logged in
+		if ($this->Auth->loggedIn()){
+			$this->Session->setFlash('あなたは既にログインしています！', 'error');
+			$this->redirect(array('controller' => 'user', 'action' => 'home'));
+		}
+
 		if (empty($username) || empty($this->params['url']['key'])){
-			throw new NotFoundException();
+			$this->setAction('_how_to_make');
+			return;
 		}
 
 		// Get playerID by requested name.
@@ -158,5 +152,8 @@ class UserController extends AppController {
 			->send();
 
 		return null;
+	}
+	public function _how_to_make(){
+		$this->render('how_to_make');
 	}
 }

@@ -1,5 +1,6 @@
 <?php
 App::uses('CakeEmail', 'Network/Email');
+App::uses('Validation', 'Utility');
 
 class ApiController extends AppController {
 	var $uses = array('ServerData');
@@ -26,6 +27,11 @@ class ApiController extends AppController {
 	public function new_account() {
 		if (empty($this->args['name']) || empty($this->args['mail']) || empty($this->args['regkey'])){
 			throw new BadRequestException('Invalid new account request.');
+		}
+
+		// Validate email addreess
+		if(!Validation::email($this->args['mail'])){
+			exit("Error, Invalid email address.");
 		}
 		
 		$title = "Minecraftゲームサーバー SakuraPVPへようこそ！";
