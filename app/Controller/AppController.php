@@ -36,6 +36,7 @@ class AppController extends Controller {
 	public $components = array(
 		'DebugKit.Toolbar',
 		'Session',
+		'Security',
 		'Auth' => array(
 				'authenticate' => array(
 					'ExtendedForm' => array( // Class ExtendedFormAuthenticate exntends FormAuthenticate
@@ -52,6 +53,11 @@ class AppController extends Controller {
 		);
 
 	public function beforeFilter(){
+		// First, require SSL connection
+		$this->Security->blackHoleCallback = '_forceSSL';
+		$this->Security->requireSecure();
+
+		// Call parent filter
 		parent::beforeFilter();
 		$this->Auth->allow();
 
@@ -66,5 +72,9 @@ class AppController extends Controller {
 				'lastViewPage' => $this->name . '/' . $this->action
 			)));
 		}
+	}
+
+	public function _forceSSL() {
+		$this->redirect('https://' . env('SERVER_NAME') . $this->here);
 	}
 }
