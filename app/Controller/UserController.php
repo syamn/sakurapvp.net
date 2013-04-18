@@ -5,7 +5,8 @@ App::uses('CakeEmail', 'Network/Email');
  
 class UserController extends AppController {
 	var $uses = array('User', 'UserData', 'RegistKey');
-	var $components = array();
+	var $components = array('Cookie');
+	var $expires = "7 days"; // Login key expires
 
 	public function beforeFilter(){
 		parent::beforeFilter();
@@ -21,6 +22,7 @@ class UserController extends AppController {
 
 	}
 
+	/* **** Login **** */
 	public function login(){
 		// User already logged in
 		if ($this->Auth->loggedIn()){
@@ -28,28 +30,74 @@ class UserController extends AppController {
 			$this->redirect(array('controller' => 'user', 'action' => 'home'));
 		}
 
-		// Login attempt
-		if ($this->request->is('post')){
+		// Login attempt - Use cookie
+		if (!is_null($this->Cookie->read('auth.pid')) && !is_null($this->Cookie->read('auth.key'))){
+			$pid = (int) $this->Cookie->read('auth.pid');
+			$key = $this->Cookie->read('auth.key');
+
+			$userData = $this->UserData->findByPlayerIdAndLoginKey($pid, $key);
+			if (!empty($userData) && strtotime($this->expires, (int) $userData['UserData']['lastWebLogin']) > time()){
+				// Login successful
+				$this->Auth->login($this->User->getUserAuthObject($pid)); // Actually　logged in as $pid user
+				$this->_updateLoginKey($pid);
+
+				// Redirect
+				$this->Session->setFlash('クッキーを使ってログインしました！', 'success');
+				$this->redirect($this->Auth->redirect());
+			}else{
+				// Login failed
+				$this->_deleteLoginKey($pid);
+				$this->Session->setFlash('自動ログイン用のクッキーが不正、または期限切れです。手動でログインしてください。', 'default', array(), 'auth');
+			}
+		}
+		// Login attempt - Post from login form
+		elseif ($this->request->is('post')){
 			if ($this->Auth->login()){
+				// Login successful
+				$pid = $this->Auth->user('player_id');
+
 				// Update last login date
-				$this->UserData->save(array('UserData' => array('player_id' => $this->Auth->user('player_id'), 'lastWebLogin' => time())));
+				$this->UserData->save(array('UserData' => array('player_id' => $pid, 'lastWebLogin' => time())));
+
+				// Check and update login cookie
+				if($this->request->data['User']['remember']){
+					$this->_updateLoginKey($pid);
+				}else{
+					$this->_deleteLoginKey($pid);
+				}
 
 				// Redirect
 				$this->Session->setFlash('ログインに成功しました！', 'success');
 				$this->redirect($this->Auth->redirect());
 			}else{
+				// Login failed
 				$this->Session->setFlash('ログインに失敗しました。プレイヤー名またはパスワードをご確認ください。', 'default', array(), 'auth');
 			}
 		}
 	}
+	public function _updateLoginKey($pid){
+		$key = Security::generateAuthKey(); /*hash('SHA512', uniqid() . mt_rand(0, mt_getrandmax()) . time());*/
+		$this->UserData->save(array('UserData' => array('player_id' => $pid, 'login_key' => $key)));
+		$this->Cookie->write('auth.pid', $pid, true, $this->expires);
+		$this->Cookie->write('auth.key', $key, true, $this->expires);
+	}
+	public function _deleteLoginKey($pid = null){
+		if (!is_null($pid) && $this->UserData->find('count', array('conditions' => array('player_id' => 1, 'login_key !=' => null))) === 1){
+			$this->UserData->save(array('UserData' => array('player_id' => $pid, 'login_key' => null)));
+		}
+		$this->Cookie->delete('auth.pid');
+		$this->Cookie->delete('auth.key');
+	}
 
 	public function logout() {
 		$this->autoRender = false;
+
+		$this->_deleteLoginKey($this->Auth->user('player_id'));
+		$this->Session->setFlash('正常にログアウトしました。', 'success');
 		$this->redirect($this->Auth->logout());
 	}
-
 	
-
+	/* **** Create a new account **** */
 	public function make_account($username = null) {
 		// User already logged in
 		if ($this->Auth->loggedIn()){

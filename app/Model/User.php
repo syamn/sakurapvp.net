@@ -36,5 +36,23 @@ class User extends AppModel {
 			));
 		return (empty($record)) ? null : $record['User']['player_id'];
 	}
+
+	/* 認証用のユーザーオブジェクトを返す */
+	public function getUserAuthObject($id){
+		$result = $this->findByPlayerId($id);
+		if (empty($result)){
+			return InternalErrorException('Invalid user id: '.$id);
+		}
+
+		// Remove UserData->password field
+		if (isset($result['Data']) && isset($result['Data']['password'])){
+			unset($result['Data']['password']);
+		}
+
+		// Pull user class then return it
+		$user = $result['User'];
+		unset($result['User']);
+		return array_merge($user, $result);
+	}
 }
 ?>
