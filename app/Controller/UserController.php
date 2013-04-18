@@ -112,7 +112,7 @@ class UserController extends AppController {
 	}
 	
 	/* **** Create a new account **** */
-	public function make_account($username = null) {		
+	public function make_account($username = null) {
 		$this->set('title_for_layout', '新規アカウントの取得');
 
 		// User already logged in
@@ -223,5 +223,10 @@ class UserController extends AppController {
 	}
 	public function _how_to_make(){
 		$this->render('how_to_make');
+	}
+
+	/* **** Password reset **** */
+	public function forgot_password(){
+		$this->set('title_for_layout', 'パスワードを忘れた');
 	}
 }
