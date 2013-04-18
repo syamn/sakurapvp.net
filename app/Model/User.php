@@ -34,7 +34,7 @@ class User extends AppModel {
 			'recursive' => -1,
 			'fields' => array('User.player_id')
 			));
-		return (empty($record)) ? null : $record['User']['player_id'];
+		return (empty($record)) ? null : (int) $record['User']['player_id'];
 	}
 
 	/* 認証用のユーザーオブジェクトを返す */
