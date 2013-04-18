@@ -22,7 +22,8 @@
 				</div>
 				<div class="control-group">
 					<div class="controls"><label class="checkbox"><?=$this->Form->input('remember', array('type' => 'checkbox'));?>
-						<i class="icon-user"></i>次回から自動でログイン <abbr title="ログイン情報をクッキーに保持させます。ご利用のコンピューターが共用のものである場合、チェックを入れないでください。" class="initialism"> [?]</abbr></label></div>
+						次回から自動でログイン <abbr title="ログイン情報をクッキーに保持させます。ご利用のコンピューターが共用のものである場合、チェックを入れないでください。" class="initialism"><i class="icon-question-sign"></i></abbr>
+					</label></div>
 				</div>
 				<div class="control-group">
 					<div class="controls"><?=$this->Form->submit('ログイン', array('class' => 'btn btn-primary'));?></div>
