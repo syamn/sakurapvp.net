@@ -4,7 +4,7 @@ App::uses('Sanitize', 'Utility');
 App::uses('CakeEmail', 'Network/Email');
  
 class UserController extends AppController {
-	var $uses = array('User', 'UserData', 'RegistKey');
+	var $uses = array('User', 'UserData', 'RegistKey', 'LoginAttempt');
 	var $components = array('Cookie');
 	var $expires = "7 days"; // Login key expires
 
@@ -30,52 +30,64 @@ class UserController extends AppController {
 			$this->redirect(array('controller' => 'user', 'action' => 'home'));
 		}
 
-		// Login attempt - Use cookie
-		if (!is_null($this->Cookie->read('auth.pid')) && !is_null($this->Cookie->read('auth.key'))){
-			$pid = (int) $this->Cookie->read('auth.pid');
-			$key = $this->Cookie->read('auth.key');
+		$remain = $this->LoginAttempt->getRemain();
+		if ($remain > 0){
+			// Login attempt - Use cookie
+			if (!is_null($this->Cookie->read('auth.pid')) && !is_null($this->Cookie->read('auth.key'))){
+				$pid = (int) $this->Cookie->read('auth.pid');
+				$key = $this->Cookie->read('auth.key');
 
-			$userData = $this->UserData->findByPlayerIdAndLoginKey($pid, $key);
-			if (!empty($userData) && strtotime($this->expires, (int) $userData['UserData']['lastWebLogin']) > time()){
-				// Login successful
-				$this->Auth->login($this->User->getUserAuthObject($pid)); // Actually　logged in as $pid user
-				$this->_updateLoginKey($pid);
-
-				// Redirect
-				$this->Session->setFlash('クッキーを使ってログインしました！', 'success');
-				$this->redirect($this->Auth->redirect());
-			}else{
-				// Login failed
-				$this->_deleteLoginKey($pid);
-				$this->Session->setFlash('自動ログイン用のクッキーが不正、または期限切れです。手動でログインしてください。', 'default', array(), 'auth');
-			}
-		}
-		// Login attempt - Post from login form
-		elseif ($this->request->is('post')){
-			if ($this->Auth->login()){
-				// Login successful
-				$pid = $this->Auth->user('player_id');
-
-				// Update last login date
-				$this->UserData->save(array('UserData' => array('player_id' => $pid, 'lastWebLogin' => time())));
-
-				// Check and update login cookie
-				if($this->request->data['User']['remember']){
+				$userData = $this->UserData->findByPlayerIdAndLoginKey($pid, $key);
+				if (!empty($userData) && strtotime($this->expires, (int) $userData['UserData']['lastWebLogin']) > time()){
+					// Login successful
+					$this->Auth->login($this->User->getUserAuthObject($pid)); // Actually　logged in as $pid user
 					$this->_updateLoginKey($pid);
-				}else{
-					$this->_deleteLoginKey($pid);
-				}
 
-				// Redirect
-				$this->Session->setFlash('ログインに成功しました！', 'success');
-				$this->redirect($this->Auth->redirect());
-			}else{
-				// Login failed
-				$this->Session->setFlash('ログインに失敗しました。プレイヤー名またはパスワードをご確認ください。', 'default', array(), 'auth');
+					$this->Session->setFlash('クッキーを使ってログインしました！', 'success');
+					$this->redirect($this->Auth->redirect()); // Redirect
+				}else{
+					// Login failed
+					$remain = $this->LoginAttempt->addRecord();
+					$this->_deleteLoginKey($pid);
+					$this->Session->setFlash('自動ログイン用のクッキーが不正、または期限切れです。手動でログインしてください。', 'default', array(), 'auth');
+				}
+			}
+			// Login attempt - Post from login form
+			elseif ($this->request->is('post') && !empty($this->data['User']['player_name']) && !empty($this->data['User']['password'])){
+				if ($this->Auth->login()){
+					// Login successful
+					$pid = $this->Auth->user('player_id');
+					$this->_onLoginSuccessful($pid);
+
+					// Check and update login cookie
+					if($this->request->data['User']['remember']){
+						$this->_updateLoginKey($pid);
+					}else{
+						$this->_deleteLoginKey($pid);
+					}
+
+					$this->Session->setFlash('ログインに成功しました！', 'success');
+					$this->redirect($this->Auth->redirect()); // Redirect
+				}else{
+					// Login failed
+					$remain = $this->LoginAttempt->addRecord();
+					$this->Session->setFlash('ログインに失敗しました。プレイヤー名またはパスワードをご確認ください。', 'default', array(), 'auth');
+				}
+			}
+			elseif ($this->request->is('post')){
+				$this->Session->setFlash('プレイヤー名またはパスワードが入力されていません！', 'default', array(), 'auth');
 			}
 		}
 
+		// Set for view
+		$this->set('remain', $remain);
 		$this->set('title_for_layout', 'ログイン');
+	}
+	private function _onLoginSuccessful($pid){
+		// Update last login date
+		$this->UserData->save(array('UserData' => array('player_id' => $pid, 'lastWebLogin' => time())));
+		// Remove login attempts
+		$this->LoginAttempt->removeRecord();
 	}
 	public function _updateLoginKey($pid){
 		$key = Security::generateAuthKey(); /*hash('SHA512', uniqid() . mt_rand(0, mt_getrandmax()) . time());*/
