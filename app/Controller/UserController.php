@@ -19,7 +19,7 @@ class UserController extends AppController {
 	}
 
 	public function home(){
-
+		$this->set('title_for_layout', 'ユーザーホーム');
 	}
 
 	/* **** Login **** */
@@ -74,6 +74,8 @@ class UserController extends AppController {
 				$this->Session->setFlash('ログインに失敗しました。プレイヤー名またはパスワードをご確認ください。', 'default', array(), 'auth');
 			}
 		}
+
+		$this->set('title_for_layout', 'ログイン');
 	}
 	public function _updateLoginKey($pid){
 		$key = Security::generateAuthKey(); /*hash('SHA512', uniqid() . mt_rand(0, mt_getrandmax()) . time());*/
@@ -98,7 +100,9 @@ class UserController extends AppController {
 	}
 	
 	/* **** Create a new account **** */
-	public function make_account($username = null) {
+	public function make_account($username = null) {		
+		$this->set('title_for_layout', '新規アカウントの取得');
+
 		// User already logged in
 		if ($this->Auth->loggedIn()){
 			$this->Session->setFlash('あなたは既にログインしています！', 'error');

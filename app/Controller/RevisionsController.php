@@ -43,6 +43,8 @@ class RevisionsController extends AppController {
 		$this->set('repo', $repo);
 		$this->set('page', $page);
 		$this->Set('lastPage', $lastPage);
+
+		$this->set('title_for_layout', 'リビジョン');
 	}
 
 	public function sakurapvp($page = 1){

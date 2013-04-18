@@ -2,7 +2,7 @@
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
-	<title><?php echo $title_for_layout; ?></title>
+	<title><?php echo $title_for_layout . ' - SakuraPVP'; ?></title>
 	<?php
 		echo $this->Html->meta('icon'); // favicon
 		// このへんで共通のcss/js読み込む
