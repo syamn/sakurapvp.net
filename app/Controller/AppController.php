@@ -45,7 +45,7 @@ class AppController extends Controller {
 						'recursive' => 0,
 					),
 				),
-				'loginRedirect' => array('controller' => 'user', 'action' => 'index'),
+				'loginRedirect' => '/',
 				'logoutRedirect' => array('controller' => 'user', 'action' => 'login'),
 				'loginAction' => array('controller' => 'user', 'action' => 'login'),
 				'authError' => 'このアクションを行うためにはログインが必要です',
@@ -55,7 +55,7 @@ class AppController extends Controller {
 	public function beforeFilter(){
 		// First, require SSL connection if this isn't on the test environment 
 		if (env('SERVER_ADDR') !== env('REMOTE_ADDR')){
-			$this->Security->blackHoleCallback = '_forceSSL';
+			$this->Security->blackHoleCallback = '_blackhole';
 			$this->Security->requireSecure();
 		}
 
@@ -76,7 +76,15 @@ class AppController extends Controller {
 		}
 	}
 
-	public function _forceSSL() {
-		$this->redirect('https://' . env('SERVER_NAME') . $this->here);
+	public function _blackhole($type) {
+		switch ($type){ 				
+			case 'secure': // Require SSL connection
+				$this->redirect('https://' . env('SERVER_NAME') . $this->here);
+				break;
+			default: // Other security error (auth, csrf, get, post, put, delete)
+				$this->Session->setFlash('不正なリクエストをブロックしました (Err: ' . $type . ')', 'error');
+				$this->redirect('/');
+				break;
+		}		
 	}
 }
