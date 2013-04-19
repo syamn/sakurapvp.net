@@ -11,6 +11,16 @@ class RevisionsController extends AppController {
 			'web' => array(9194389, 'ウェブサイト')
 		);
 
+	public function beforeFilter(){
+		// Call parent filter
+		parent::beforeFilter();
+
+		// Don't require SSL connection only github-hooks.
+		if ($this->action === 'github_hooks'){
+			$this->Security->requireSecure = array();
+		}
+	}
+
 	public function index($repo = 'sakurapvp', $page = 1) {
 		// Validate
 		$repo = trim(strtolower($repo));
@@ -66,7 +76,7 @@ class RevisionsController extends AppController {
 
 		// Github settings
 		$ALLOW_REPO_OWNER = array('syamn', 'SakuraServer', 'SakuraPVP');
-		$GITHUB_IPS = array('207.97.227.253', '50.57.128.197', '108.171.174.178', '204.232.175.75');
+		$GITHUB_IPS = array('207.97.227.253', '50.57.128.197', '108.171.174.178', '50.57.231.61', '204.232.175.64', '204.232.175.75', '192.30.252.0');
 		// End of github settings
 
 		// begen new logfile
