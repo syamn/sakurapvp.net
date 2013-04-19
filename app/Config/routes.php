@@ -28,6 +28,11 @@
  */
 //	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
 Router::connect('/', array('controller' => 'home', 'action' => 'index'));
+
+// Login and logout
+Router::connect('/login', array('controller' => 'sessions', 'action' => 'login'));
+Router::connect('/logout', array('controller' => 'sessions', 'action' => 'logout'));
+
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */

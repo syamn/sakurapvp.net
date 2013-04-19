@@ -22,6 +22,11 @@ class SessionsController extends AppController {
 			exit;
 		}
 
+		// Auto redirect to short url '/login'.
+		if (strpos($this->here, '/sessions/login') === 0){ // Java string.startWith($str, $prefix);
+			$this->redirect('/login');
+		}
+
 		$remain = $this->LoginAttempt->getRemain();
 		if ($remain > 0){
 			// Login attempt - Use cookie
