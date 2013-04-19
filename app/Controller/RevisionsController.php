@@ -15,9 +15,9 @@ class RevisionsController extends AppController {
 		// Call parent filter
 		parent::beforeFilter();
 
-		// Don't require SSL connection only github-hooks.
+		// Don't check post data only github-hooks. (But SSL connection still required.)
 		if ($this->action === 'github_hooks'){
-			$this->Security->requireSecure = array();
+			$this->Security->unlockedActions = array('github_hooks');
 		}
 	}
 

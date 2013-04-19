@@ -54,8 +54,8 @@ class AppController extends Controller {
 
 	public function beforeFilter(){
 		// First, require SSL connection if this isn't on the test environment 
-		if (env('SERVER_ADDR') !== env('REMOTE_ADDR')){
-			$this->Security->blackHoleCallback = '_blackhole';
+		$this->Security->blackHoleCallback = '_blackhole';
+		if (env('SERVER_ADDR') !== env('REMOTE_ADDR')){			
 			$this->Security->requireSecure();
 		}
 
