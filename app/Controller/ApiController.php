@@ -38,7 +38,7 @@ class ApiController extends AppController {
 		$title = "Minecraftゲームサーバー SakuraPVPへようこそ！";
 		$vars = array(
 				'name' => $this->args['name'],
-				'url' => 'http://sakurapvp.net/user/make_account/'.$this->args['name'].'?key='.$this->args['regkey'],
+				'url' => 'http://sakurapvp.net/sessions/make_account/'.$this->args['name'].'?key='.$this->args['regkey'],
 			);
 
 		$mail = new CakeEmail('default');

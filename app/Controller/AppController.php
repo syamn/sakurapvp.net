@@ -46,8 +46,8 @@ class AppController extends Controller {
 					),
 				),
 				'loginRedirect' => '/',
-				'logoutRedirect' => array('controller' => 'user', 'action' => 'login'),
-				'loginAction' => array('controller' => 'user', 'action' => 'login'),
+				'logoutRedirect' => array('controller' => 'sessions', 'action' => 'login'),
+				'loginAction' => array('controller' => 'sessions', 'action' => 'login'),
 				'authError' => 'このアクションを行うためにはログインが必要です',
 			)
 		);

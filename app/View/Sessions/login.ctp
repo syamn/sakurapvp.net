@@ -43,8 +43,8 @@
 		</div>
 		<div class="span3 offset1">
 			<ul class="nav nav-tabs nav-stacked">
-				<li><?=$this->Html->link('アカウントの作成', array('controller' => 'user', 'action' => 'make_account'));?></li>
-				<li><?=$this->Html->link('パスワードを忘れた', array('controller' => 'user', 'action' => 'forgot_password'));?></li>
+				<li><?=$this->Html->link('アカウントの作成', array('controller' => 'sessions', 'action' => 'make_account'));?></li>
+				<li><?=$this->Html->link('パスワードを忘れた', array('controller' => 'sessions', 'action' => 'forgot_password'));?></li>
 			</ul>
 		</div>
 	</div>

@@ -17,7 +17,7 @@
 		<div class="span4">
 			<h3>Step 3 <small>登録完了</small></h3>
 			<p>おめでとうございます！これであなたのアカウントが作成されました！</p>
-			<p><?=$this->Html->link('ログインページ', array('controller' => 'user', 'action' => 'login'));?>から、あなたのアカウントにログインできるかご確認ください。</p>
+			<p><?=$this->Html->link('ログインページ', array('controller' => 'sessions', 'action' => 'login'));?>から、あなたのアカウントにログインできるかご確認ください。</p>
 			<p>あなたのプロフィールなどの設定は、ログイン後のページより可能です。</p>
 			<p>また、登録完了のメールが送信されますので、こちらもご覧ください。</p>
 		</div>

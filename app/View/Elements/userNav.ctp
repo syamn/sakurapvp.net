@@ -5,7 +5,7 @@
 		<ul class="dropdown-menu">
 			<li><?=$this->Html->link('ホーム', array('controller' => 'user', 'action' => 'home'));?></li>
 			<b class="caret"></b>
-			<li><?=$this->Html->link('ログアウト', array('controller' => 'user', 'action' => 'logout'));?></li>
+			<li><?=$this->Html->link('ログアウト', array('controller' => 'sessions', 'action' => 'logout'));?></li>
 		</ul>
 	</li>
 </ul>
