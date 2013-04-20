@@ -82,8 +82,10 @@ class AppController extends Controller {
 				$this->redirect('https://' . env('SERVER_NAME') . $this->here);
 				break;
 			default: // Other security error (auth, csrf, get, post, put, delete)
-				$this->Session->setFlash('不正なリクエストをブロックしました (Err: ' . $type . ')', 'error');
-				$this->redirect('/');
+				$this->Session->setFlash('不正なリクエストをブロックしました。お手数ですが、再度やり直してください。 (Err: ' . strtoupper($type) . ')', 'error');
+				$jump = $this->referer();
+				if (empty($jump)) $jump = '/';
+				$this->redirect($jump);
 				break;
 		}		
 	}
