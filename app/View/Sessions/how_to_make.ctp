@@ -21,5 +21,60 @@
 			<p>あなたのプロフィールなどの設定は、ログイン後のページより可能です。</p>
 			<p>また、登録完了のメールが送信されますので、こちらもご覧ください。</p>
 		</div>
+		<hr />
+		<div class="span12">
+			<center>
+				<br />
+				<h4>登録コード入力</h4>
+				<p>メールに記載されているURLをクリックできない場合は、次のフォームから登録をお試しください。<br />
+				プレイヤー名と、メールに記載されている登録コードを入力して、Enterキーを押下してください。</p>
+				<form class="form-inline">
+					<input id="name" type="text" class="input-medium submit " placeholder="プレイヤー名">
+					<input id="code" type="text" class="input-small submit" placeholder="登録コード">
+				</form>
+				<div class="alert alert-error" id="err" style="display: none;"><strong id="err_msg"></strong></div>
+			</center>
+		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$('.submit').keydown(function(e) {
+		$("#err_pass2").addClass("error");
+		if (e.which && e.which != 13){
+			return;
+		}
+
+		var name = $('#name').val();
+		var code = $('#code').val();
+		var error = false;
+
+		// Validate username
+		if (isValidName(name) === 1){
+			if(name.length <= 0){
+				$('#err_msg').html('ユーザー名が入力されていません！');
+			}else{
+				$('#err_msg').html('不正なユーザー名です！');
+			}
+			$('#name').focus();
+			error = true;
+		}
+
+		// Validate key
+		if(code.length < 4 || code.length > 16){
+			if (code.length <= 0){
+				$('#err_msg').html('登録コードが入力されていません！');
+			}else{
+				$('#err_msg').html('不正な登録コードです！');
+			}
+			$('#code').focus();
+			error = true;
+		}
+
+		if (error){
+			$('#err').show();
+		}else{
+			$('#hide').hide();
+			window.location = "/sessions/make_account/" + name + "?key=" + code;
+		}
+	});
+</script>

@@ -119,10 +119,10 @@ class SessionsController extends AppController {
 		if ($this->Auth->loggedIn()){
 			$this->Session->setFlash('あなたは既にログインしています！', 'error');
 			$this->redirect('/');
-			exit;
+			return;
 		}
 
-		if (empty($username) || empty($this->params['url']['key'])){
+		if (empty($username)){
 			$this->setAction('_how_to_make');
 			return;
 		}
@@ -130,7 +130,9 @@ class SessionsController extends AppController {
 		// Get playerID by requested name.
 		$pid = $this->User->getUserID($username);
 		if(empty($pid) || $pid <= 0){
-			throw new BadRequestException('User '.$username.' is not found!');
+			$this->Session->setFlash('プレイヤー '.h($username).' が見つかりません！', 'error');
+			$this->redirect(array('controller' => 'sessions', 'action' => 'make_account'));
+			return;
 		}
 
 		// Auth register key.
@@ -142,26 +144,29 @@ class SessionsController extends AppController {
 				'recursive' => 2
 			));
 		if (empty($record)){
-			$this->Session->setFlash('不正な登録キーです！', 'error');
-			$this->redirect('/');
+			$this->Session->setFlash('入力されたプレイヤー名または登録キーが間違っています！', 'error');
+			$this->redirect(array('controller' => 'sessions', 'action' => 'make_account'));
+			return;
 		}
 		if (!empty($record['User']['Data'])){
 			$this->RegistKey->delete($record['RegistKey']['player_id']); 
 			$this->Session->setFlash('あなたは既にアカウントを持っています！', 'error');
-			$this->redirect('/');
+			$this->redirect(array('controller' => 'sessions', 'action' => 'login'));
+			return;
 		}
 		if ((int)$record['RegistKey']['expired'] < time()){
 			$this->Session->setFlash('この登録キーは有効期限が切れています！ゲーム内から再登録を行ってください！', 'error');
-			$this->redirect('/');
+			$this->redirect(array('controller' => 'sessions', 'action' => 'make_account'));
+			return;
 		}
 
 		// Check is requested?
-		if (!empty($this->data)){
+		if ($this->request->is('post') && !empty($this->data)){
 			$message = $this->_regist($record);
 			if (empty($message)){
-				$this->Session->setFlash('ユーザー登録が完了しました！ログインページから、あなたのアカウントにログインしてください！', 'success');
-				$this->redirect('/');
-				exit;
+				$this->Session->setFlash('ユーザー登録が完了しました！あなたのアカウントにログインしてください！', 'success');
+				$this->redirect(array('controller' => 'sessions', 'action' => 'login'));
+				return;
 			}else{
 				$this->Session->setFlash($message, 'error');
 			}
@@ -173,28 +178,34 @@ class SessionsController extends AppController {
 		$this->set('key', $record['RegistKey']['key']);
 	}
 	public function _regist($record){
-		$data = $this->data;
-		if (empty($data['pass1']) || empty($data['pass2'])){
-			return '不正なリクエストです。やり直してください。';
+		pr($this->data);
+		// Check agreed box.
+		if (!$this->data['agreed']){
+			return 'ユーザー登録を行うためには、利用規約に同意していただく必要があります。';
 		}
 
-		// Validate password
-		$pass1 = $data['pass1'];
-
+		// Validate password.
+		$pass1 = $this->data['pass1'];
 		if (mb_strlen($pass1) < 6) {
-			return 'パスワードは6文字以上で入力してください';
+			return 'パスワードは6文字以上で入力してください。';
 		}
 		if (mb_strlen($pass1) > 100){
-			return 'パスワードが100文字以下で入力してください';
+			return 'パスワードが100文字以下で入力してください。';
 		}
-		if ($pass1 !== $data['pass2']){
-			return '確認のパスワードが一致しませんでした';
+		if ($pass1 !== $this->data['pass2']){
+			return '確認のパスワードが一致しませんでした。';
 		}
 
+		// Validation passed. Update database.
 		$pid = $record['User']['player_id'];
 		$now = time();
 
-		// Registaration
+		// Check email.
+		$tmp = $this->UserData->findByEmail($record['RegistKey']['email']);
+		if(!empty($tmp)){
+			return '他のユーザーが既に使用しているメールアドレスです。数時間お待ちいただき、再度ゲーム内から登録してください。';
+		}
+
 		$newRecord = array('UserData' => array(
 			'player_id' => $pid,
 			'password' => $pass1,
@@ -206,6 +217,7 @@ class SessionsController extends AppController {
 		if (!$this->UserData->save($newRecord)){
 			return 'ユーザ登録に失敗しました。管理人にご連絡ください。';
 		}
+
 		$this->RegistKey->delete($record['RegistKey']['player_id']); // Delete registKey
 
 		// Send welcome mail
