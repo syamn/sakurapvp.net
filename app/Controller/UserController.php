@@ -84,6 +84,7 @@ class UserController extends AppController {
 		$this->render('edit_profile');
 	}
 
+	/* Email confirmation */
 	private function _updateEmail($email){
 		// Generate new key, don't use 'IL1 il O0o' characters
 		$strArray = preg_split("//", "abcdefghjkmnpqrstuvwxABCDEFGHJKMNPQRSTUVWXYZ23456789", null, PREG_SPLIT_NO_EMPTY);
@@ -109,6 +110,7 @@ class UserController extends AppController {
 				'name' => $this->Auth->user('player_name'), 
 				'newMail' => $email,
 				'url' => 'https://sakurapvp.net/user/confirm_email/?key='.$key,
+				'key' => $key,
 				'ip' => env('REMOTE_ADDR')
 			);
 
@@ -119,5 +121,32 @@ class UserController extends AppController {
 			->to($email)
 			->subject($title)
 			->send();
+	}
+	public function confirm_email() {
+		$email = $this->EmailRequest->getNewEmail($this->Auth->user('player_id'));
+		if (is_null($email)){
+			$this->Session->setFlash('確認が必要なメールアドレスが無いか、確認コードの有効期限切れです。再度変更手続きを行ってください。', 'error');
+			$this->redirect(array('controller' => 'user', 'action' => 'edit', 'base'));
+			return;
+		}
+
+		// Verify
+		if ($this->request->is('post') && !empty($this->data['key'])){
+			$result = $this->EmailRequest->verify($this->Auth->user('player_id'), $this->data['key']);
+			if ($result){
+				$this->Session->write('Auth.User.Data.email', $email); // Update auth object
+				$this->Session->setFlash('登録メールアドレスは正常に変更されました！', 'success');
+				$this->redirect(array('controller' => 'user', 'action' => 'edit', 'base'));
+				return;
+			}else{
+				$this->Session->setFlash('確認コードが間違っています。再度入力してください。', 'error');
+			}
+		}
+
+		$this->set('title_for_layout', 'メールアドレスの確認');
+		$this->set('name', $this->Auth->user('player_name'));
+		$this->set('currentEmail', $this->Auth->user('Data.email'));
+		$this->set('email', $email);
+		$this->set('key', (empty($this->params['url']['key'])) ? '' : $this->params['url']['key']);
 	}
 }

@@ -18,7 +18,12 @@
 			<label class="control-label" for="email">メールアドレス</label>
 			<div class="controls"><?=$this->Form->input('email', array('placeholder' => 'Email', 'value' => $user['Data']['email'], 'class' => 'input-xlarge', 'id' => 'email', 
 				'disabled' => (!empty($pendingEmail))?'true':'' ));?></div>
-			<?=(!empty($pendingEmail)) ? '<div class="controls"><label>'.$pendingEmail.' への変更をリクエスト中 (確認メール送信済み)</label></div>' : '';?>
+			<?php
+				if (!empty($pendingEmail)){
+					$text = '確認コードを入力する (確認メール送信済み)';
+					echo '<div class="controls"><label>'.$pendingEmail.' への変更をリクエスト中<br />'.$this->Html->link($text, array('controller' => 'user', 'action' => 'confirm_email')).'</label></div>';
+				}
+			?>
 		</div>
 		<div id="err_pass1" class="control-group">
 			<label class="control-label" for="pass1">新しいパスワード</label>

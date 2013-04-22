@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+App::import('Model', 'UserData');
 
 class EmailRequest extends AppModel {
 	public $name = 'EmailRequest';
@@ -23,6 +24,37 @@ class EmailRequest extends AppModel {
 
 	/* 変更先のメールアドレスを返す */
 	public function getNewEmail($pid){
+		$record = $this->_findByPlayerId($pid);
+		if (is_null($record)){
+			return null;
+		}
+
+		return $record['email'];
+	}
+
+	/* メールアドレスの検証を行う 成功なら関連レコードの更新を行いtrueを返す */
+	public function verify($pid, $key){
+		$record = $this->_findByPlayerId($pid);
+		if (is_null($record)){
+			return false; // Valid revord not found.
+		}
+
+		// Failed verify, returns false.
+		if ($record['key'] !== $key){
+			return false;
+		}
+
+		// Update some records.
+		$userData = new UserData();
+		$userData->read(null, (int) $pid);
+		$userData->save(array('email' => $record['email']), true, array('email'));
+
+		$this->delete($record['player_id']); // delete request record.
+		
+		return true;
+	}
+
+	private function _findByPlayerId($pid){
 		$pid = (int) $pid;
 		$record = $this->findByPlayerId($pid);
 
@@ -30,16 +62,17 @@ class EmailRequest extends AppModel {
 		if (empty($record)){
 			return null; 
 		}
+		$record = $record['EmailRequest'];
 
 		// Record expires check.
-		$check = (int) $record['EmailRequest']['expired'];
+		$check = (int) $record['expired'];
 		if ($check < time()){
 			// Time expired, delete this record and returns null.
-			$this->delete($record['EmailRequest']['player_id']);
+			$this->delete($record['player_id']);
 			return null;
 		}
 
-		return $record['EmailRequest']['email'];
+		return $record;
 	}
 }
 ?>
