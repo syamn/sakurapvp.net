@@ -76,6 +76,12 @@ class UserController extends AppController {
 				$this->redirect($this->here);
 			}
 		}
+
+		// Don't keep password in the input form for security reasons.
+		$this->request->data['UserData']['pass1'] = '';
+		$this->request->data['UserData']['pass2'] = '';
+		$this->request->data['UserData']['currentPass'] = '';
+
 		$this->set('title_for_layout', 'ユーザー基本情報編集');
 		$this->render('edit_data');
 	}

@@ -76,6 +76,9 @@ class SessionsController extends AppController {
 			}
 		}
 
+		// Don't keep password in the input form.
+		$this->request->data['User']['password'] = '';
+
 		// Set for view
 		$this->set('remain', $remain);
 		$this->set('title_for_layout', 'ログイン');
