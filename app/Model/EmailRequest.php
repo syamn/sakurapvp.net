@@ -1,21 +1,23 @@
 <?php
 App::uses('AppModel', 'Model');
-App::import('Model', 'UserData');
 
 class EmailRequest extends AppModel {
 	public $name = 'EmailRequest';
 	public $useTable = 'email_requests';
 	public $primaryKey = 'player_id';
 	public $validate = array(
+			'player_id' => array(
+					'内部エラーです (PID 0)' => array('rule' => array('comparison', '>', 0)),
+				),
 			'email' => array(
-					'emailRule-1' => array(
-							'rule' => 'email',
-							'message' => '有効なメールアドレスを入力してください'
-						)
-					'emailRule-2' => array(
-							'rule' => array('maxLength', 100),
-							'message' => '100文字以下のメールアドレスしか設定できません'
-						)
+					'有効なメールアドレスを入力してください' => array('rule' => 'email'),
+					'100文字以下のメールアドレスしか設定できません' => array('rule' => array('maxLength', 100)),
+				),
+			'key' => array(
+					'確認コードが空です' => array('rule' => 'notEmpty'),
+				),
+			'expired' => array(
+					'有効期限が数値ではありません' => array('rule' => 'numeric'),
 				),
 		);
 
@@ -49,9 +51,9 @@ class EmailRequest extends AppModel {
 		}
 
 		// Update some records.
-		$userData = new UserData();
-		$userData->read(null, (int) $pid);
-		$userData->save(array('email' => $record['email']), true, array('email'));
+		$this->UserData = new UserData();
+		$this->UserData->read(null, (int) $pid);
+		$this->UserData->save(array('email' => $record['email']), true, array('email'));
 
 		$this->delete($record['player_id']); // delete request record.
 

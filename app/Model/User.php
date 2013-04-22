@@ -5,6 +5,11 @@ class User extends AppModel {
 	public $name = 'User';
 	public $useTable = 'user_base';
 	public $primaryKey = 'player_id';
+	public $validate = array(
+			'player_id' => array(
+					'内部エラーです (PID 0)' => array('rule' => array('comparison', '>', 0)),
+				),
+		);
 
 	public $hasOne = array(
 			'Stat' => array(
