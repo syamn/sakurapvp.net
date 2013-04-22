@@ -12,6 +12,10 @@ class EmailRequest extends AppModel {
 							'rule' => 'email',
 							'message' => '有効なメールアドレスを入力してください'
 						)
+					'emailRule-2' => array(
+							'rule' => array('maxLength', 100),
+							'message' => '100文字以下のメールアドレスしか設定できません'
+						)
 				),
 		);
 
@@ -50,7 +54,7 @@ class EmailRequest extends AppModel {
 		$userData->save(array('email' => $record['email']), true, array('email'));
 
 		$this->delete($record['player_id']); // delete request record.
-		
+
 		return true;
 	}
 

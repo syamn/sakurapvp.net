@@ -16,6 +16,10 @@ class UserData extends AppModel {
 					'emailRule-2' => array(
 							'rule' => 'isUnique',
 							'message' => 'このメールアドレスは既に使用されています'
+						),
+					'emailRule-3' => array(
+							'rule' => array('maxLength', 100),
+							'message' => '100文字以下のメールアドレスしか設定できません'
 						)
 				),
 		);
