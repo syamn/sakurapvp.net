@@ -7,7 +7,7 @@
 			array('name' =>'Revisions', 'link' => $this->Html->link('Revisions', array('controller' => 'revisions', 'action' => 'index'))),
 		);
 ?>
-</p><!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
