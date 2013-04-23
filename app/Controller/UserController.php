@@ -5,7 +5,7 @@ App::uses('CakeEmail', 'Network/Email');
  
 class UserController extends AppController {
 	var $uses = array('User', 'UserData', 'RegistKey', 'LoginAttempt', 'EmailRequest');
-	var $components = array('Cookie');
+	var $components = array('Cookie', 'Common');
 	var $newEmailExpires = "24 hours"; // Login key expires
 
 	public function beforeFilter(){
@@ -92,12 +92,7 @@ class UserController extends AppController {
 
 	/* Email confirmation */
 	private function _updateEmail($email){
-		// Generate new key, don't use 'IL1 il O0o' characters
-		$strArray = preg_split("//", "abcdefghjkmnpqrstuvwxABCDEFGHJKMNPQRSTUVWXYZ23456789", null, PREG_SPLIT_NO_EMPTY);
-		$key = '';
-		foreach (array_rand($strArray, 6) as $i) { // Key length = 6
-			$key .= $strArray[$i];
-		}
+		$key = $this->Common->getRandomString(6);
 
 		// Update database.
 		$newRaw = array('EmailRequest' => array(

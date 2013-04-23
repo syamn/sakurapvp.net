@@ -4,6 +4,7 @@ App::uses('Validation', 'Utility');
 
 class ApiController extends AppController {
 	var $uses = array('ServerData', 'User', 'UserData');
+	var $components = array('Common');
 	var $args;
 
 	public function beforeFilter(){
@@ -76,12 +77,8 @@ class ApiController extends AppController {
 			exit("Error,unregistered");
 		}
 
-		// Generate new password, don't use 'IL1 il O0o' characters
-		$strArray = preg_split("//", "abcdefghjkmnpqrstuvwxABCDEFGHJKMNPQRSTUVWXYZ23456789", null, PREG_SPLIT_NO_EMPTY);
-		$newPass = '';
-		foreach (array_rand($strArray, 10) as $i) { // new password lenght = 10
-			$newPass .= $strArray[$i];
-		}
+		// Generate 10 chars new password.
+		$newPass = $this->Common->getRandomString(10);
 
 		// Update database
 		$this->UserData->save(array('UserData' => array(
