@@ -1,4 +1,13 @@
-<!DOCTYPE html>
+<?php
+	$headLink = array(
+			array('name' =>'Home', 'link' => $this->Html->link('Home', array('controller' => 'home', 'action' => 'index'))),
+			array('name' =>'Forums', 'link' => '<a>Forums</a>'),
+			array('name' =>'Ranking', 'link' => '<a>Rankins</a>'),
+			array('name' =>'Maps', 'link' => '<a>Maps</a>'),
+			array('name' =>'Revisions', 'link' => $this->Html->link('Revisions', array('controller' => 'revisions', 'action' => 'index'))),
+		);
+?>
+</p><!DOCTYPE html>
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
@@ -34,11 +43,15 @@
 						<a class="brand" href="/">SakuraPVP</a>
 						<div class="nav-collapse collapse">
 							<ul class="nav">
-								<li class="active"><a href="/">About</a></li>
-								<li><a href="#forum">Forum</a></li>
-								<li><a href="#stats">Stats</a></li>
-								<li><a href="#stats">Map</a></li>
-								<li><a href="/revisions">Revisions</a></li>
+								<?php
+									foreach ($headLink as $data){
+										if ($data['name'] === $this->name){
+											echo '<li class="active">'.$data['link'].'</li>';
+										}else{
+											echo '<li>'.$data['link'].'</li>';
+										}
+									}
+								?>
 							</ul>
 							<?php
 								echo $this->element(($loggedIn) ? 'userNav' : 'guestNav');
