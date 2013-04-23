@@ -12,22 +12,23 @@
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title><?php echo $title_for_layout . ' - SakuraPVP'; ?></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<?php
+		// Meta
+		echo $this->fetch('meta');
 		echo $this->Html->meta('icon'); // favicon
-		// このへんで共通のcss/js読み込む
+
 		// CSS
 		echo $this->Html->css('bootstrap.min');
-		echo $this->Html->css('bootstrap-responsive.min');
 		echo $this->Html->css('sakurapvp');
+		echo $this->fetch('css');
+		echo $this->Html->css('bootstrap-responsive.min'); // Need to load after the original css
+
 		// Script
 		echo $this->Html->script('jquery/jquery-1.8.3.min');
 		echo $this->Html->script('bootstrap.min');
 		echo $this->Html->script('custom.js');
-
-		// この下3つは CP1.x のscripts_for_layoutと同じ ヘルパー使ってるビューで勝手に入れられるらしい
-		echo $this->fetch('meta');
-		echo $this->fetch('css');
-		echo $this->fetch('script');
+		echo $this->fetch('script');		
 	?>
 </head>
 <body>
