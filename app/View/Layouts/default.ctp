@@ -2,7 +2,7 @@
 	$headLink = array(
 			array('name' =>'Home', 'link' => $this->Html->link('Home', array('controller' => 'home', 'action' => 'index'))),
 			array('name' =>'Forums', 'link' => '<a>Forums</a>'),
-			array('name' =>'Ranking', 'link' => '<a>Rankins</a>'),
+			array('name' =>'Rankings', 'link' => '<a>Rankings</a>'),
 			array('name' =>'Maps', 'link' => '<a>Maps</a>'),
 			array('name' =>'Revisions', 'link' => $this->Html->link('Revisions', array('controller' => 'revisions', 'action' => 'index'))),
 		);
