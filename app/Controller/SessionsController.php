@@ -28,7 +28,7 @@ class SessionsController extends AppController {
 		}
 
 		$remain = $this->LoginAttempt->getRemain();
-		if ($remain > 0){
+		if (is_int($remain) && $remain > 0){
 			// Login attempt - Use cookie
 			if (!is_null($this->Cookie->read('auth.pid')) && !is_null($this->Cookie->read('auth.key'))){
 				$pid = (int) $this->Cookie->read('auth.pid');

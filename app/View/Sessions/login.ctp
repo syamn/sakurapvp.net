@@ -25,12 +25,17 @@
 						次回から自動でログイン <abbr title="ログイン情報をクッキーに保持させます。ご利用のコンピューターが共用のものである場合、チェックを入れないでください。" class="initialism"><i class="icon-question-sign"></i></abbr>
 					</label></div>
 				</div>
-				<?php if($remain > 0): ?>
+				<?php if(is_int($remain) && $remain > 0): ?>
 					<div class="control-group">
 						<div class="controls"><?=$this->Form->submit('ログイン', array('class' => 'btn btn-primary'));?></div>
 					</div>
 					<div class="alert alert-info controls">
 						あと <strong><?=$remain;?>回</strong> ログイン試行できます <button type="button" class="close" data-dismiss="alert">&times;</button>
+					</div>
+				<?php elseif(is_null($remain)): ?>
+					<div class="alert alert-error controls">
+						<i class="icon-remove"></i> <strong><u>ログインできません！</u></strong><br />
+						あなたのIPはブロックされています。<br /><small>このブロックは自動解除されません。<br />これが不当なものである場合、サポートまでご連絡ください。</small>
 					</div>
 				<?php else: ?>
 					<div class="alert alert-error controls">
