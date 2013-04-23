@@ -4,6 +4,7 @@ App::uses('Sanitize', 'Utility');
  
 class RevisionsController extends AppController { 
 	var $uses = array('CommitLog');
+	var $components = array('Common');
 
 	var $repoList = array(
 			'sakurapvp' => array(9029307, 'SakuraPVP'),

@@ -29,7 +29,7 @@
 					<tr>
 						<td><?=$firstRowNo;?></td>
 						<td><?=h($row['CommitLog']['hash']);?></td>
-						<td><?=date("y/m/d H:i:s", $row['CommitLog']['date']);?></td>
+						<td><a rel="tooltip" title="<?=date("y/m/d H:i:s", $row['CommitLog']['date']);?>"><?=$this->Common->getRelativeTime($row['CommitLog']['date']);?></a></td>
 						<td><?=h($row['CommitLog']['author']);?></td>
 						<td><?=h($row['CommitLog']['msg']);?></td>
 					</tr>
@@ -58,12 +58,5 @@
 	</div>
 </div>
 <script type="text/javascript">
-	$(document).ready(function(){
-		<?php
-			if (!(isset($username) && isLoggedIn($username))){
-				print "$('.online').attr('disabled', true);\n";
-			}
-		?>
-		$('.disable').attr('disabled', true);
-	});
+	$('a[rel=tooltip]').tooltip({'placement': 'bottom'});
 </script>
