@@ -108,5 +108,5 @@ CakeLog::config('error', array(
 	'file' => 'error',
 ));
 
-// Load DebugKit
+// Load plugins
 CakePlugin::load('DebugKit');
