@@ -52,6 +52,10 @@ Cache::config('default', array('engine' => 'File'));
  * ));
  *
  */
+App::build(array(
+		'Controller' => array(ROOT.DS.APP_DIR.DS.'Controller'.DS.'Admin'.DS),
+		'View' => array(ROOT.DS.APP_DIR.DS.'View'.DS.'Admin'.DS),
+	));
 
 /**
  * Custom Inflector rules, can be set to correctly pluralize or singularize table, model, controller names or whatever other
@@ -71,6 +75,7 @@ Cache::config('default', array('engine' => 'File'));
  * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
  *
  */
+CakePlugin::load('DebugKit');
 
 /**
  * You can attach event listeners to the request lifecyle as Dispatcher Filter . By Default CakePHP bundles two filters:
@@ -107,6 +112,3 @@ CakeLog::config('error', array(
 	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
 	'file' => 'error',
 ));
-
-// Load plugins
-CakePlugin::load('DebugKit');

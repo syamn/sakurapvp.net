@@ -27,16 +27,22 @@
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
 //	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
+
+// Index page
 Router::connect('/', array('controller' => 'home', 'action' => 'index'));
 
 // Login and logout
 Router::connect('/login', array('controller' => 'sessions', 'action' => 'login'));
 Router::connect('/logout', array('controller' => 'sessions', 'action' => 'logout'));
 
+// Admin controllers
+Router::connect('/admin/user/:action/*', array('controller' => 'admin_user'));
+Router::connect('/admin/user/*', array('controller' => 'admin_user'));
+
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
-	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+	//Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
 
 /**
  * Load all plugin routes. See the CakePlugin documentation on

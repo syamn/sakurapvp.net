@@ -46,10 +46,12 @@ class AppController extends Controller {
 					),
 				),
 				'loginRedirect' => '/',
-				'logoutRedirect' => array('controller' => 'sessions', 'action' => 'login'),
+				'logoutRedirect' => '/',
 				'loginAction' => array('controller' => 'sessions', 'action' => 'login'),
 				'authError' => 'このアクションを行うためにはログインが必要です',
-			)
+				'authorize' => array('Controller'),
+			),
+		'Perms',
 		);
 
 	public function beforeFilter(){
@@ -88,5 +90,9 @@ class AppController extends Controller {
 				$this->redirect($jump);
 				break;
 		}		
+	}
+
+	public function isAuthorized($user) {
+		return true;
 	}
 }
