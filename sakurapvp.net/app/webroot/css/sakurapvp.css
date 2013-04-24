@@ -6,3 +6,12 @@ body {
 a {
 	cursor: pointer;
 }
+
+#header-face {
+	margin-top: -3px;
+	margin-right: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border-radius: 4px;
+	border: 1px solid #333;
+}

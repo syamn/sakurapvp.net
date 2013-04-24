@@ -1,7 +1,11 @@
 <ul class="nav pull-right">
 	<li class="divider-vertical"></li>
 	<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown">ようこそ <?=AuthComponent::user('player_name');?> さん！<b class="caret"></b></a>
+		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+			<img id="header-face" src="http://skin.sakurapvp.net/face/<?=AuthComponent::user('player_name');?>/22.png"/>
+			ようこそ <?=AuthComponent::user('player_name');?> さん！
+			<b class="caret"></b>
+		</a>
 		<ul class="dropdown-menu">
 			<li><?=$this->Html->link('ホーム', array('controller' => 'user', 'action' => 'home'));?></li>
 			<li><?=$this->Html->link('ユーザー情報の編集', array('controller' => 'user', 'action' => 'edit'));?></li>
