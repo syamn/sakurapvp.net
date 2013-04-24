@@ -1,0 +1,87 @@
+<?php
+require_once('../lib/class.image.php');
+
+// Settings
+define('DIR', '../skins/face/');
+define('ERR_FACE', '!ERROR!');
+define('REF_INTERVAL', '24 hours');
+define('DEF_SIZE', 60);
+define('MIN_SIZE', 11);
+define('MAX_SIZE', 500);
+$user = null;
+$size = DEF_SIZE;
+
+// Get path info parameter.
+if (isset($_SERVER["PATH_INFO"])){
+	$param = explode("/", $_SERVER["PATH_INFO"]);
+	$paramsize = count($param);
+	if ($paramsize > 1){
+		$user = $param[1];
+	}
+	if ($paramsize > 2){
+		$size = (int)$param[2];
+	}
+}
+
+// Refresh skin if needed.
+$error = (is_null($user));
+if(!$error && isRequireUpdate($user)){
+	if(updateFace($user) === false){
+		$error = true;
+	}
+}
+
+// Send image to browser.
+if($error) $user = ERR_FACE;
+if($size < MIN_SIZE || $size > MAX_SIZE) $size = DEF_SIZE;
+
+showFace($user, $size);
+
+// スキンデータの再取得が必要かどうか返す
+function isRequireUpdate($name){
+	$path = DIR . $name . '.png';
+	// File not found.
+	if (!file_exists($path)){
+		return true;
+	}
+
+	// Check edit date.
+	$time = filemtime($path);
+	if (time() >= strtotime(REF_INTERVAL, $time)){
+		return true; // 24hrs or older, refresh skin.
+	}else{
+		return false;
+	}
+}
+
+// スキンデータの再取得を行う
+function updateFace($name){
+	$url = 'http://s3.amazonaws.com/MinecraftSkins/' . $name . '.png';
+	$path = DIR . $name . '.png';
+
+	// Check user skin exists
+	$check = @fopen($url, 'r');
+	if (!$check) return false;
+
+	// image cropping
+	$image = new Image($url);
+
+	$image->crop(8, 8);
+	$image->width(8);
+	$image->height(8);
+
+	$image->setPath($path);
+	$image->save();
+}
+
+// リサイズして表示する
+function showFace($name, $size){
+	$image = new Image(DIR . $name . '.png'); // 8 x 8 image
+	$image->resize(($size / 8) * 100); // resize
+	$image->show();
+}
+
+function pr($arg){
+	print_r($arg);
+}
+?>

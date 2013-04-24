@@ -1,11 +1,16 @@
-# CakePHP main configurations
+# sakurapvp.net
+# - CakePHP main configurations
 sakurapvp.net/app/tmp/*
 sakurapvp.net/app/Config/core.php
 sakurapvp.net/app/Config/database.php
 sakurapvp.net/app/Config/email.php
 sakurapvp.net/app/Vendor/OAuth/Config.php
 
-# CakePHP dust
+# skin.sakurapvp.net
+skin.sakurapvp.net/skins/face/*
+!skin.sakurapvp.net/skins/face/!ERROR!.png
+
+# Keep empty file
 !empty
 
 # Filesystem dust / Others
