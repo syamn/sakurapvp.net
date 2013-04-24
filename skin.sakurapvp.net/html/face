@@ -22,6 +22,7 @@ if (isset($_SERVER["PATH_INFO"])){
 		$size = (int)$param[2];
 	}
 }
+if ($user == 'guest') $user = null;
 
 // Refresh skin if needed.
 $error = (is_null($user));
