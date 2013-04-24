@@ -25,7 +25,7 @@
 		echo $this->Html->css('bootstrap-responsive.min'); // Need to load after the original css
 
 		// Script
-		echo $this->Html->script('jquery/jquery-1.8.3.min');
+		echo $this->Html->script('jquery/jquery-1.9.1.min');
 		echo $this->Html->script('bootstrap.min');
 		echo $this->Html->script('custom.js');
 		echo $this->fetch('script');		
