@@ -1,0 +1,13 @@
+<?php
+	if (!isset($_GET['l']) || empty($_GET['l'])){
+		exit;
+	}
+	$path = $_GET['l'];
+
+	if (strpos($path, 'http://skin.sakurapvp.net/') !== 0){
+		exit;
+	}
+
+	header('Content-type: image/png');
+	readfile($path);
+?>

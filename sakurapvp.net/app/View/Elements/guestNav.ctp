@@ -1,7 +1,7 @@
 <ul class="nav pull-right">
 	<li class="divider-vertical"></li>
 	<li>		
-		<?=$this->Html->link('<img id="header-face" src="http://skin.sakurapvp.net/face/guest/22.png"/>ゲストさん ようこそ！',
+		<?=$this->Html->link('<img id="header-face" src="/img/get?l=http://skin.sakurapvp.net/face/guest/22.png"/>ゲストさん ようこそ！',
 		array('controller' => 'sessions', 'action' => 'login'), array('escape' => false));?>
 	</li>
 	<li class="dropdown">
