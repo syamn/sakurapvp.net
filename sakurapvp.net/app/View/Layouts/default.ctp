@@ -71,5 +71,6 @@
 			<p>&copy; SakuraPvP 2013</p>
 		</div><!-- /footer -->
 	</div><!-- container -->
+	<?=$this->element('googleAnalytics');?>
 </body>
 </html>
