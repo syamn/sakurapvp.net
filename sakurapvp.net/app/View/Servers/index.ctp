@@ -12,7 +12,7 @@
 			<ul class="thumbnails">
 				<?php foreach($servers as $server): ?>
 					<li class="span6">
-						<div class="thumbnail">
+						<div class="thumbnail server-thumbnail">
 							<?php if((int)$server['ServerData']['status'] === 1): ?>
 								<span class="label label-info">Status: Online</span>
 							<?php else: ?>
@@ -39,7 +39,7 @@
 			<h3>その他のサーバー <small> Other servers</small></h3>
 			<ul class="thumbnails">
 				<li class="span6">
-					<div class="thumbnail">
+					<div class="thumbnail other-server">
 						<!--<img data-src="#" alt="" /><center><code>画像準備中…</code></center>-->
 						<center><h4>auth.sakurapvp.net</h4></center>
 						<p>SakuraPVP ユーザー登録用サーバーです。<br />
@@ -47,7 +47,7 @@
 					</div>
 				</li>
 				<li class="span6">
-					<div class="thumbnail">
+					<div class="thumbnail other-server">
 						<!--<img data-src="#" alt="" /><center><code>画像準備中…</code></center>-->
 						<center><h4>build.sakurapvp.net</h4></center>
 						<p>SakuraPVP マップ製作用サーバーです。<br />
@@ -75,4 +75,23 @@
 </div>
 <script type="text/javascript">
 	$('a[rel=tooltip]').tooltip({'placement': 'top'});
+
+	$(document).ready(function() {
+		equalHeight($(".other-server"));
+	});
+
+	$(window).load(function() {
+		equalHeight($(".server-thumbnail"));
+	});
+
+	function equalHeight(group) {
+		tallest = 0;
+		group.each(function() {
+			thisHeight = $(this).height();
+			if(thisHeight > tallest) {
+				tallest = thisHeight;
+			}
+		});
+		group.each(function() { $(this).height(tallest); });
+	}
 </script>
