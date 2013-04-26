@@ -2,7 +2,7 @@
 	<li class="divider-vertical"></li>
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-			<img id="header-face" src="/img/get?l=http://skin.sakurapvp.net/face/<?=AuthComponent::user('player_name');?>/22.png"/>
+			<img id="header-face" src="/img/get?l=http://skin.sakurapvp.net/face/<?=AuthComponent::user('player_name');?>/20.png"/>
 			ようこそ <?=AuthComponent::user('player_name');?> さん！
 			<b class="caret"></b>
 		</a>
