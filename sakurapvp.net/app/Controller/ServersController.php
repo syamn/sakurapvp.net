@@ -8,6 +8,7 @@ class ServersController extends AppController {
 	public function index() {
 		// Getting data from database.
 		$servers = $this->ServerData->find('all', array(
+				'conditions' => array('ServerData.hidden' => 0),
 				'fields' => array('ServerData.server_id', 'ServerData.name', 'ServerData.max_players', 'ServerData.status', 'ServerData.map_id', 'ServerData.next_id'),
 				'order' => array('ServerData.server_id'),
 				'recursive' => -1,
@@ -24,6 +25,13 @@ class ServersController extends AppController {
 
 		// Mapping users to server arrays
 		foreach ($servers as &$server){
+			// Server offline, skip adding this server data.
+			if ((int)$server['ServerData']['status'] !== 1){
+				$server['ServerData']['players'] = array();
+				continue;
+			}
+
+			// Server online. Count and adding this server data.
 			$online = array();
 			foreach($users as $user_row => $user){
 				if ($user['User']['currentServer'] === $server['ServerData']['server_id']){
@@ -31,16 +39,11 @@ class ServersController extends AppController {
 					unset($users[$user_row]); // Remove this user from $users map.
 				}
 			}
-
-			if ((int)$server['ServerData']['status'] === 1){
-				$availables++; // increment available servers count.
-			}
-
+			
+			$availables++; // increment available servers count.
 			$maxUsers += (int)$server['ServerData']['max_players'];
 			$server['ServerData']['players'] = $online;
 		}
-
-		pr($servers);
 
 		$maintenance = false;
 		$this->set(array(
@@ -49,7 +52,6 @@ class ServersController extends AppController {
 				'maxUsers' => $maxUsers, // int
 				'availables' => $availables, // int
 				'servers' => $servers, // array
-
 			));
 		$this->set('title_for_layout', 'サーバーリスト');
 	}
