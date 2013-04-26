@@ -1,9 +1,10 @@
 <?php
 	$headLink = array(
 			array('name' =>'Home', 'link' => $this->Html->link('Home', array('controller' => 'home', 'action' => 'index'))),
-			array('name' =>'Forums', 'link' => '<a>Forums</a>'),
-			array('name' =>'Rankings', 'link' => '<a>Rankings</a>'),
-			array('name' =>'Maps', 'link' => '<a>Maps</a>'),
+			array('name' =>'Servers', 'link' => $this->Html->link('Servers', array('controller' => 'servers', 'action' => 'index'))),
+			array('name' =>'Maps', 'link' => '<a><s>Maps</s></a>'),
+			array('name' =>'Forums', 'link' => '<a><s>Forums</s></a>'),
+			array('name' =>'Rankings', 'link' => '<a><s>Rankings</s></a>'),			
 			array('name' =>'Revisions', 'link' => $this->Html->link('Revisions', array('controller' => 'revisions', 'action' => 'index'))),
 		);
 ?>
@@ -68,7 +69,7 @@
 		</div><!-- /content -->
 		<hr />
 		<div class="footer">
-			<p>&copy; SakuraPvP 2013</p>
+			<p>&copy; SakuraPVP 2013</p>
 		</div><!-- /footer -->
 	</div><!-- container -->
 	<?=$this->element('googleAnalytics');?>
