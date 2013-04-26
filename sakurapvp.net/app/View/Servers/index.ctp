@@ -26,7 +26,9 @@
 							</center>
 							<ul>
 								<?php foreach($server['ServerData']['players'] as $name): ?>
-									<li><?=$name;?></li>
+									<a rel="tooltip" title="<?=$name;?>">
+										<img class="avatar-face" src="/img/get?l=http://skin.sakurapvp.net/face/<?=$name;?>/40.png" />
+									</a>
 								<?php endforeach; ?>
 							</ul>
 						</div>
@@ -61,7 +63,9 @@
 				<ul>
 					<?php foreach($servers as $server): ?>
 						<?php foreach($server['ServerData']['players'] as $name): ?>
-							<li><?=$name;?></li>
+							<a rel="tooltip" title="<?=$name;?>">
+								<img class="avatar-face" src="/img/get?l=http://skin.sakurapvp.net/face/<?=$name;?>/40.png" />
+							</a>
 						<?php endforeach; ?>
 					<?php endforeach; ?>
 				</ul>
@@ -69,3 +73,6 @@
 		</div>
 	</div>
 </div>
+<script type="text/javascript">
+	$('a[rel=tooltip]').tooltip({'placement': 'top'});
+</script>
