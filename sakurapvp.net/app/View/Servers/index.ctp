@@ -14,12 +14,11 @@
 					<li class="span6">
 						<div class="thumbnail server-thumbnail">
 							<?php if((int)$server['ServerData']['status'] === 1): ?>
-								<span class="label label-info">Status: Online</span>
+								<span class="label label-info">オンライン</span>
 							<?php else: ?>
-								<span class="label label-important">Status: Offline</span>
-							<?php endif;?>
-							
-							<img data-src="#" alt="" /><center><code>画像準備中…</code></center>
+								<span class="label label-important">オフライン</span>
+							<?php endif;?>							
+							<!--<img data-src="#" alt="" /><center><code>画像準備中…</code></center>-->
 							<center>
 								<h4><?=$server['ServerData']['name'];?>.sakurapvp.net<small><br />
 								<?=count($server['ServerData']['players']);?>/<?=$server['ServerData']['max_players'];?> players online</small></h4>
@@ -41,7 +40,7 @@
 				<li class="span6">
 					<div class="thumbnail other-server">
 						<!--<img data-src="#" alt="" /><center><code>画像準備中…</code></center>-->
-						<center><h4>auth.sakurapvp.net</h4></center>
+						<center><h4><s>auth.sakurapvp.net</s></h4></center>
 						<p>SakuraPVP ユーザー登録用サーバーです。<br />
 							他のサーバーにログインできなくなった際のユーザー登録にご利用ください。</p>
 					</div>
@@ -52,6 +51,12 @@
 						<center><h4>build.sakurapvp.net</h4></center>
 						<p>SakuraPVP マップ製作用サーバーです。<br />
 							新しいPVPマップの製作に使われます。</p>
+						<div class="pull-right">
+							<?=$this->Html->link('<span class="label label-success">&gt;&gt; マップの製作について</span>',
+								array('controller' => 'help', 'action' => 'map_making'),
+								array('escape' => false));
+							?>							
+						</div>
 					</div>
 				</li>
 			</ul>
