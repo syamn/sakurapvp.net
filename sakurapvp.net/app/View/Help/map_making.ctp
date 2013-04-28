@@ -31,7 +31,7 @@
 					<li>別の既存のマップからコピーする場合、コピーするマップ名</li>
 					<li>複数人で製作する場合、協力者のプレイヤー名</li>
 				</ul>
-			<p>これらを申請した後、スタッフが確認次第、申請したマップ名と同じワールドが製作用サーバーに生成されます。</p>
+			<p>これらを申請した後、スタッフが確認次第、申請したマップ名と同じ名前のワールドが製作用サーバーに生成されます。</p>
 
 			<h4>実際にマップを作る</h4>
 			<p>あなたのマップのためのワールドが作られたら、そのワールドへ移動してみましょう。<br />
@@ -65,13 +65,48 @@
 
 			<h5>使うことができるコマンド</h5>
 			<p>快適にマップ製作を行えるように、次のコマンドをサーバー内で使うことができます。<br />
-				一部のコマンドは、ワールド保護のため、自分が製作しているマップのワールド内でのみ利用できます。</p>
+				一部のコマンドは、ワールド保護のため、自分が製作しているマップのワールド内でのみ利用できます。<br />
+				プラグイン・コマンドの使い方については、<?=$this->Html->link('検索', 'http://google.co.jp/', array('target' => '_blank'));?>するか、手探りで覚えてください。</p>
 			<ul>
 				<li>WorldEditで地形編集に関係のあるすべてのコマンド</li>
 				<li>VoxelSniperで地形編集に関係のあるコマンド(LiteSniper権限)</li>
 				<li>QuickSignプラグインのすべてのコマンド (看板の一括編集など)</li>
 				<li>TimTheEnchanterプラグインのすべてのコマンド (特殊エンチャントアイテムなど)</li>
 				<li>PistonJumpプラグインのすべてのコマンドと権限</li>
+				<li>Essentialsプラグインの次のコマンド</li>
+				<br />
+				<ul class="span4">
+					<li><b><u>Userグループから使用可能</u></b></li>
+					<li>/sethome [home-name]</li>
+					<li>/delhome [home-name]</li>
+					<li>/home [player:][home-name]</li>
+					<li>/tp [name]</li>
+					<li>/tppos [x] [y] [z]</li>
+					<li>/back</li>
+					<li>/jump</li>					
+					<li>/top</li>
+					<li>/exp set [amount]</li>
+					<li>/feed</li>
+					<li>/heal</li>
+					<li>/fly</li>
+					<li>/speed</li>
+					<li>/gamemode [survival|creative|adventure]</li>
+					<li>/item [item|id] [amount [itemmeta]]</li>
+					<li>/ci, /clearinventory</li>
+					<li>/m [name] [message]</li>
+					<li>/ping</li>
+					<li>/getpos [name]</li>
+					<br />
+				</ul>				
+				<ul class="span4">
+					<li><b><u>Creatorグループから使用可能</u></b></li>
+					<li>/weather</li>
+					<li>/spawner [mob]</li>
+					<li>/bigtree</li>
+					<li>/break</li>					
+					<li>/fireball</li>
+					<li>/lightning</li>					
+				</ul>
 			</ul>
 		</div>
 		<div class="tab-pane" id="config">
