@@ -1,10 +1,11 @@
-<?php $this->Html->css('headers', null, array('inline' => false)) ?>
+<?php $this->Html->css('headers', null, array('inline' => false)); ?>
+<?php $this->Html->script('jquery/jquery.pjax.js', array('inline' => false)); ?>
 <div class="container-fluid">
 	<h1>マップ製作について <small> How to make a new Map?</small></h1>
 	<hr />
 	<ul id="tab-list" class="nav nav-tabs">
-		<li class="offset1 active"><a href="#begin" data-toggle="tab">Step0: 製作方法の決定</a></li>
-		<li class=""><a href="#server" data-toggle="tab">Step1: build.sakurapvp.net</a></li>
+		<li class="offset1 active"><a href="#begin" data-toggle="tab" step="0">Step0: 製作方法の決定</a></li>
+		<li class=""><a href="#server" data-toggle="tab" step="1">Step1: build.sakurapvp.net</a></li>
 		<li class="disabled"><a>Step2: 設定ファイルの作成</a></li>
 		<li class="disabled"><a>Step3: にゃあ</a></li>
 	</ul>
@@ -63,6 +64,17 @@
 				</ul>
 			</ul>
 
+			<h5>サーバーの仕様と注意事項</h5>
+			<ul>
+				<li>一定間隔でバックアップを行っていますが、基本的なログは取得していないため、荒らし行為があった場合などの巻き戻しはできません。<br />
+					なお、マップ制作申請者と、その申請者が申告した協力者以外はそのワールドで地形編集などを行うことはできませんので、ご安心ください。</li>
+				<li>このサーバーで入力したコマンドは、サーバー全体に表示されます。これは、強力なツールの悪用防止と、大規模な地形編集によるラグなどを予測できるようにするためです。</li>
+				<li>権限設定によって、地形編集ツールなどは自分が製作を行っているマップ上でしか動作しないようになっていますが、これらのプラグインの仕様で、一部他人のマップが存在するワールドに影響のあるコマンドも存在します。
+					もし見つけたとしても、それらのコマンドは絶対に試さないでください。意図的に実行した場合は接続禁止措置を行います。</li>
+				<li>WorldEditを使用した一度のブロック変更可能数はデフォルトで50,000、上限は10,000です。</li>
+				<li>WorldEditのスクリプト機能や、他の地形編集プラグインを使用したい場合は、スタッフまでご相談ください。</li>
+			</ul>
+
 			<h5>使うことができるコマンド</h5>
 			<p>快適にマップ製作を行えるように、次のコマンドをサーバー内で使うことができます。<br />
 				一部のコマンドは、ワールド保護のため、自分が製作しているマップのワールド内でのみ利用できます。<br />
@@ -118,6 +130,14 @@
 	</div>
 </div>
 <script type="text/javascript">
+	$('#tab-list a').click(function (e) {
+		e.preventDefault();
+		var step = $(this).attr('step');
+		if (isset(step)){
+			history.pushState(null, null, "<?=$this->Html->url(array('controller' => $this->params['controller'], 'action' => $this->action));?>/" + step);
+		}
+	});
+
 	$("#toggleStep1").click(function () {
 		$('#tab-list a:eq(1)').tab('show');
 	});
