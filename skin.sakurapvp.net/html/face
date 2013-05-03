@@ -1,5 +1,4 @@
 <?php
-require_once('../lib/class.image.php');
 
 // Settings
 define('DIR', '../skins/face/');
@@ -59,27 +58,49 @@ function isRequireUpdate($name){
 function updateFace($name){
 	$url = 'http://s3.amazonaws.com/MinecraftSkins/' . $name . '.png';
 	$path = DIR . $name . '.png';
+	$size = 8; // save file size (8x8)
 
 	// Check user skin exists
 	$check = @fopen($url, 'r');
 	if (!$check) return false;
 
-	// image cropping
-	$image = new Image($url);
+	$skin = imagecreatefrompng($url);
 
-	$image->crop(8, 8);
-	$image->width(8);
-	$image->height(8);
+	// base face
+	$face_base = imagecreatetruecolor($size, $size);
+	imagecopyresized($face_base, $skin, 0, 0, 8, 8, $size, $size, 8, 8);
 
-	$image->setPath($path);
-	$image->save();
+	// upper layer
+	$layer = imagecreatetruecolor($size, $size);
+	$transparent = imagecolorallocatealpha($layer, 255, 255, 255, 127); // 透明色で塗りつぶす
+	imagefill($layer, 0, 0, $transparent);
+	imagecolortransparent($layer, $transparent);
+	imagecopyresized($layer, $skin, 0, 0, 40, 8, $size, $size, 8, 8);
+
+	// merge layer
+	imagecopymerge($face_base, $layer, 0, 0, 0, 0, $size, $size, 100);
+
+	imagepng($face_base, $path); // save
+
+	// destroy
+	imagedestroy($skin);
+	imagedestroy($layer);
+	imagedestroy($face_base);
 }
 
 // リサイズして表示する
 function showFace($name, $size){
-	$image = new Image(DIR . $name . '.png'); // 8 x 8 image
-	$image->resize(($size / 8) * 100); // resize
-	$image->show();
+	$source = imagecreatefrompng(DIR . $name . '.png'); // 8 x 8 image
+
+	$output = imagecreatetruecolor($size, $size);
+	imagecopyresized($output, $source, 0, 0, 0, 0, $size, $size, imagesx($source), imagesy($source));
+
+	header("Content-type: image/png");
+	imagepng($output); // show
+
+	// destroy
+	imagedestroy($source);
+	imagedestroy($output);
 }
 
 function pr($arg){
